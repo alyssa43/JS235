@@ -4,8 +4,35 @@ const users = {
   9101: { name: 'Susan Green', age: 42 },
 };
 
+const passwords = {                             // WARNING: THIS IS NOT HOW
+  Aisha: { password: 'password123', id: 1234 }, // PASSWORDS ARE STORED
+  John: { password: 'secret', id: 5678 },
+  Susan: { password: 'Green83', id: 9101 },
+};
+
+function authenticate(username, password, callback) {
+  setTimeout(() => {
+    // 10% chance of an unknown server error
+    if (Math.random() < 0.75) {
+      return callback('Something went wrong. Please try again later.', null);
+    }
+
+    if (passwords[username] && passwords[username].password === password) {
+      callback(null, passwords[username].id);
+    } else {
+      callback('Invalid username or password', null);
+    }
+  }, 1000);
+}
+
 function fetchUserProfile(id, callback) {
   setTimeout(() => {
+    // 10% chance of an unknown server error
+    if (Math.random() < 0.75) {
+      return callback('Something went wrong. Please try again later.', null);
+    }
+
+    // Normal behavior: check if user exists
     let userData = users[id];
     if (userData) {
       callback(null, userData);
@@ -13,4 +40,22 @@ function fetchUserProfile(id, callback) {
       callback('User not found', null);
     }
   }, 2000);
+}
+
+function retryNTimes(fn, n, callback, ...args) {
+  let attempts = 0;
+
+  function attempt() {
+    fn(...args, (error, data) => {
+      if (!error || attempts >= n) {
+        callback(error, data);
+      } else {
+        console.log(`attempt: ${attempts}`);
+        attempts += 1;
+        attempt();
+      }
+    });
+  }
+
+  attempt();
 }

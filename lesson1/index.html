@@ -22,8 +22,13 @@
   
   <form id="userForm">
     <label>
-      User ID:
-      <input type="text" id="userIdInput" placeholder="Enter user ID">
+      Username:
+      <input type="text" id="usernameInput" placeholder="Enter username">
+    </label>
+
+    <label>
+      Password:
+      <input type="password" id="passwordInput" placeholder="Enter Password">
     </label>
     <button type="submit">Fetch Profile</button>
   </form>
@@ -39,19 +44,33 @@
     document.getElementById('userForm').addEventListener('submit', function (event) {
       event.preventDefault();
       
-      // Reset messages
       const userInfoDiv = document.getElementById('userInfo');
+      const errorMessageDiv = document.getElementById('errorMessage');
+
       userInfoDiv.textContent = '';
+      errorMessageDiv.style.display = 'none';
 
-      // Get form input
-      const userIdInput = document.getElementById('userIdInput').value;
-      const userId = userIdInput.trim();
+      const username = document.getElementById('usernameInput').value;
+      const password = document.getElementById('passwordInput').value;
 
-      // Call the fetchUserProfile function from server.js
-      fetchUserProfile(userId, (errorMessage, userData) => {
-        // Update message
-        userInfoDiv.textContent = `Hello, ${userData.name}!\nYou are ${userData.age} years old!`;
-      });
+      retryNTimes(authenticate, 2, (errorMessage, userId) => {
+        if (userId) {
+          userInfoDiv.textContent = 'Login Successful!\n Fetching your profile...';
+
+          retryNTimes(fetchUserProfile, 2, (errorMessage, userData) => {
+            if (userData) {
+              userInfoDiv.textContent = `Hello, ${userData.name}!\n You are ${userData.age} years old.`;
+            } else {
+              errorMessageDiv.textContent = errorMessage;
+              errorMessageDiv.style.display = 'block';
+            }
+          }, userId);
+          
+        } else {
+          errorMessageDiv.textContent = errorMessage;
+          errorMessageDiv.style.display = 'block';
+        }
+      }, username, password);
     });
   </script>
 </body>
