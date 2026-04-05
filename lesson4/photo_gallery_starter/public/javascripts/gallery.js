@@ -1,48 +1,90 @@
 import templates from './templates.js';
 
-// templates.photo ({id, src, caption})
-// templates.photos (photosArray)
-// templates.photoInformation({title, created_at, id, likes, favorites})
-// templates.comment({gravatar, name, date, body})
-// templates.comments(commentsArray)
+class PhotoGallery {
+  #photos;
+  #comments;
+  #activeIndex = 0; // added
 
-let photos;
-let comments;
+  constructor() {
+    this.slides = document.getElementById('slides');
+    this.infoHeader = document.getElementById('information');
+    this.commentsList = document.querySelector('#comments ul');
+    this.prevAnchor = document.querySelector('.prev');
+    this.nextAnchor = document.querySelector('.next');
 
-async function fetchPhotos() {
-  let response = await fetch('/photos');
-  return response.json();
+    this.#setupEventListeners();
+  }
+
+  #setupEventListeners() {
+    this.prevAnchor.addEventListener('click', event => this.#handlePrev(event));
+    this.nextAnchor.addEventListener('click', event => this.#handleNext(event));
+  }
+
+  async init() {
+    await this.#fetchPhotos();
+    this.#renderPhotos();
+    this.#renderPhotoInformation();
+    await this.#fetchComments();
+    this.#renderComments();
+  }
+
+  async #fetchPhotos() {
+    const response = await fetch('/photos');
+    this.#photos = await response.json();
+  }
+
+  async #fetchComments() {
+    const response = await fetch(`/comments?photo_id=${this.#getActivePhotoId()}`);
+    this.#comments = await response.json();
+  }
+
+  async #transitionSlide() {
+    const figures = this.slides.querySelectorAll('figure');
+    const activeFigure = figures[this.#activeIndex];
+
+    figures.forEach(fig => {
+      fig.classList.remove('show');
+      fig.classList.add('hide');
+    });
+
+    activeFigure.classList.remove('hide');
+    activeFigure.classList.add('show');
+
+    this.#renderPhotoInformation();
+    await this.#fetchComments();
+    this.#renderComments();
+  }
+
+  #handlePrev(event) {
+    event.preventDefault();
+    const photosLength = this.#photos.length;
+    this.#activeIndex = (this.#activeIndex - 1 + photosLength) % photosLength;
+    this.#transitionSlide();
+  }
+
+  #handleNext(event) {
+    event.preventDefault();
+    const photosLength = this.#photos.length;
+    this.#activeIndex = (this.#activeIndex + 1) % photosLength;
+    this.#transitionSlide();
+  }
+
+  #getActivePhotoId() {
+    return this.#photos[this.#activeIndex].id;
+  }
+
+  #renderPhotos() {
+    this.slides.innerHTML = templates.photos(this.#photos);
+  }
+
+  #renderPhotoInformation() {
+    const photo = this.#photos[this.#activeIndex];
+    this.infoHeader.innerHTML = templates.photoInformation(photo);
+  }
+
+  #renderComments() {
+    this.commentsList.innerHTML = templates.comments(this.#comments);
+  }
 }
 
-function renderPhotos() {
-  let slides = document.getElementById('slides');
-  slides.innerHTML = templates.photos(photos);
-}
-
-function renderPhotoInformation(idx) {
-  let photo = photos.find(item => item.id === idx);
-  let header = document.getElementById('information');
-  header.innerHTML = templates.photoInformation(photo);
-}
-
-async function fetchCommentsFor(id) {
-  let response = await fetch(`/comments?photo_id=${id}`);
-  return response.json();
-}
-
-function renderComments() {
-  let commentsList = document.querySelector('#comments ul');
-  commentsList.innerHTML = templates.comments(comments);
-}
-
-async function main() {
-  photos = await fetchPhotos();
-  let activePhotoId = photos[0].id;
-  renderPhotos();
-  renderPhotoInformation(activePhotoId);
-
-  comments = await fetchCommentsFor(activePhotoId);
-  renderComments();
-}
-
-document.addEventListener('DOMContentLoaded', main);
+document.addEventListener('DOMContentLoaded', () => new PhotoGallery().init());
