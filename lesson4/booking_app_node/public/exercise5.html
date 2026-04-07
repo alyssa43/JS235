@@ -5,11 +5,11 @@
     <title>Exercises</title>
     <style>
       /* Part 3 */
-      dl {
+      .exercise3 dl {
         border: 3px double #ccc;
         padding: 0.5em;
       }
-      dt {
+      .exercise3 dt {
         float: left;
         clear: left;
         width: 100px;
@@ -17,14 +17,14 @@
         font-weight: bold;
         color: #f0595b;
       }
-      dt::after {
+      .exercise3 dt::after {
         content: ":";
       }
-      dd {
+      .exercise3 dd {
         margin: 0 0 0 110px;
         padding: 0 0 0.5em 0;
       }
-      input[type="submit"] {
+      .exercise3 input[type="submit"] {
         color: #fff;
         background: #f0595b;
         border-color: #f0595b;
@@ -77,6 +77,9 @@
       .exercise4 button {
         background: #5cafde;
       }
+
+      /* Part 5 */
+
     </style>
   </head>
   <body>
@@ -86,8 +89,7 @@
       <script src="./javascripts/exercise2.js"></script>
     </div>
     
-    <br>
-    <br>
+    <br><br>
 
     <div class="exercise3">
       <h3>Exercise 3:</h3>
@@ -111,8 +113,7 @@
       <script src="./javascripts/exercise3.js"></script>
     </div>
    
-    <br>
-    <br>
+    <br><br>
 
     <div class="exercise4">
       <h3>Exercise 4:</h3>
@@ -122,6 +123,37 @@
         <input id="btnSubmit" type="submit">
       </form>
       <script src="./javascripts/exercise4.js"></script>
+    </div>
+
+    <br><br>
+
+    <div class="exercise5">
+      <h3>Exercise 5:</h3>
+      <br><br>
+      <h1>Schedules</h1>
+      <form id="newBookingForm" method="post" action="/api/bookings">
+        <label for="id">Please select one schedule</label>
+        <select id="id" name="id">
+          <!-- Add options here -->
+        </select>
+        <br>
+        <label for="student_email">Email:</label>
+        <input type="email" id="student_email" name="student_email" required>
+        <input id="submitBtn" type="submit">
+      </form>
+
+      <form id="newStudentForm" method="post" action="/api/students" style="display: none;">
+        <h1>Please provide new student details</h1>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email">
+        <br>
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name">
+
+
+      </form>
     </div>
   </body>
 </html>
