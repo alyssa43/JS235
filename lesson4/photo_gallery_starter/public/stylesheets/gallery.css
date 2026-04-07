@@ -68,10 +68,6 @@ a.favorite {
   height: 784px;
 }
 
-/* #slides figure + figure {
-  display: none;
-} */
-
 #slides figure + figure {
   opacity: 0;
 }
