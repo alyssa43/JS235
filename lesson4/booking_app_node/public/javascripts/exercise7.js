@@ -23,7 +23,7 @@ async function handleSubmit(event) {
 }
 
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const forms = document.querySelectorAll('form');
   forms.forEach(form => form.addEventListener('submit', e => handleSubmit(e)));
 });
