@@ -107,14 +107,14 @@ class StudentBookingUI {
     return option;
   }
   
-  async #fetchSchedules() {
-    const response = await fetch('/api/schedules');
-    return response.json();
-  }
-
   async #fetchAvailableSchedules() {
     const schedules = await this.#fetchSchedules();
     return schedules.filter(sch => !sch.student_email);
+  }
+
+  async #fetchSchedules() {
+    const response = await fetch('/api/schedules');
+    return response.json();
   }
 
   async #fetchStaff() {
