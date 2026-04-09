@@ -26,6 +26,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
-// create an 'Add more schedules' button
-// when clicked 

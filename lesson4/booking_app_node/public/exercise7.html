@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Booking App Part 7</title>
+    <style>
+    </style>
+  </head>
+  <body>
+    <h1>Cancellations</h1>
+    <h3>Cancel Staff Schedule</h3>
+    <form id="cancelScheduleForm" data-method="DELETE" data-path="schedules">
+      <label for="schedule_id">Schedule ID:</label>
+      <input type="number" id="schedule_id" name="id" required>
+      <input type="submit" value="Cancel Schedule">
+    </form>
+    <h3>Cancel Student Booking</h3>
+    <form id="cancelBookingForm" data-method="PUT" data-path="bookings">
+      <label for="booking_id">Booking ID:</label>
+      <input type="number" id="booking_id" name="id" required>
+      <input type="submit" value="Cancel Booking">
+    </form>
+
+  </body>
+  <script src="./javascripts/exercise7.js"></script>
+</html>
